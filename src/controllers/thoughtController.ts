@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import{ Thought } from '../models/Thought';
 import { User } from '../models/User';
 
-export const thoughtCOntroller = {
+export const thoughtController = {
     // Get all thoughts
     async getThoughts(_: Request, res: Response): Promise<void> {
         try {
@@ -13,7 +13,7 @@ export const thoughtCOntroller = {
         }
     },
     // Get a single thought
-    async getThoughtsById(req: Request, res: Response): Promise<void> {
+    async getThoughtById(req: Request, res: Response): Promise<void> {
         try {
             const thought = await Thought.findById(req.params.id);
             if (!thought) {
