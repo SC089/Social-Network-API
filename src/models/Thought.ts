@@ -1,4 +1,4 @@
-import { Schema, model, Document, Types } from 'mongoose';
+import { Schema, model, Document, Types, SchemaTypeOptions } from 'mongoose';
 
 export interface IReaction {
     reactionId: Types.ObjectId;
@@ -33,8 +33,12 @@ const reactionSchema = new Schema<IReaction>(
         createdAt: {
             type: Date,
             default: Date.now,
-            get: (timestamp: Date) => timestamp.toLocaleString(),
-        },
+            get: function (timestamp: Date | number | undefined): string {
+                if (!timestamp) return '';
+                const date = typeof timestamp === 'number' ? new Date(timestamp) : timestamp;
+                return date.toLocaleString();
+            },
+        } as unknown as SchemaTypeOptions<Date>,
     },
     {
         toJSON: {
@@ -55,8 +59,12 @@ const thoughtSchema = new Schema<IThought>(
         createdAt: {
             type: Date,
             default: Date.now,
-            get: (timestamp: Date) => timestamp.toLocaleString(),
-        },
+            get: function (timestamp: Date | number | undefined): string {
+                if (!timestamp) return '';
+                const date = typeof timestamp === 'number' ? new Date(timestamp) : timestamp;
+                return date.toLocaleString();
+            },
+        } as unknown as SchemaTypeOptions<Date>,
         username: {
             type: String,
             required: true,
@@ -72,7 +80,7 @@ const thoughtSchema = new Schema<IThought>(
     }
 );
 
-thoughtSchema.virtual('reactionCount').get(function () {
+thoughtSchema.virtual('reactionCount').get(function (this: IThought) {
     return this.reactions.length;
 });
 
